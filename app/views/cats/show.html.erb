@@ -14,3 +14,24 @@
     <td><%= @cat.description %></td>
   </tr>
 </table>
+
+<table>
+  <tr>
+    <th> Start Date</th>
+    <th> End date </th>
+  </tr>
+<% @rentals.each do |rental| %>
+  <tr>
+    <td><%=rental.start_date%> </td>
+    <td><%=rental.end_date%>  </td>
+    <% if rental.pending?%>
+      <td><%= button_to  "approve",
+        "cat_rental_requests/#{rental.id}/approve",
+        :class=> "button" %></td>
+      <td><%= button_to  "deny",
+        "cat_rental_requests/#{rental.id}/deny",
+        :class=> "button" %></td>
+    <%end%>
+</tr>
+<%end%>
+</table>

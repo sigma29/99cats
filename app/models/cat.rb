@@ -10,6 +10,9 @@ class Cat < ActiveRecord::Base
   validates :color, inclusion: { in: COLOR,
     message: "%{value} is not a valid color" }
 
+  has_many :cat_rental_requests,
+    dependent: :destroy
+
   def age
     (Date.today - self.birthdate).to_i / 365
   end
