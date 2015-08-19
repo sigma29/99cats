@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   resources :cat_rental_requests
   post 'cats/cat_rental_requests/:id/approve', to: "cat_rental_requests#approve"
   post 'cats/cat_rental_requests/:id/deny', to: "cat_rental_requests#deny"
+  resource :user, only: [:create, :new]
 end
