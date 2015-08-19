@@ -12,7 +12,6 @@ class CatsController < ApplicationController
     @cat = Cat.find(params[:id])
     @rentals = @cat
       .cat_rental_requests
-      .joins("JOIN users ON cat_rental_requests.user_id = users.id")
       .order(:start_date)
       .includes(:requester)
     render :show
