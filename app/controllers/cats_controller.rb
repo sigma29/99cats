@@ -1,6 +1,8 @@
 class CatsController < ApplicationController
   before_action :editor_owns_cat, only: [:edit, :update]
 
+  helper_method :user_owns_cat?
+
   def index
     @cats = Cat.all
     render :index
@@ -40,6 +42,10 @@ class CatsController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def user_owns_cat?
+    current_user.id == Cat.find(params[:id]).user_id
   end
 
   private

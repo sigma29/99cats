@@ -1,4 +1,6 @@
 class CatRentalRequestsController < ApplicationController
+  before_action :user_owns_cat, only: [:approve, :deny]
+
   def new
     @rental_request = CatRentalRequest.new
     @cats = Cat.all
@@ -35,5 +37,14 @@ class CatRentalRequestsController < ApplicationController
 
   def index
     render :index
+  end
+
+  private
+
+  def user_owns_cat
+    cat = CatRentalRequest.find(params[:id]).cat
+    unless current_user.id == cat.user_id
+      redirect_to cat_url(cat.id)
+    end
   end
 end
