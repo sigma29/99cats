@@ -4,7 +4,7 @@ class CatRentalRequest < ActiveRecord::Base
   validates :cat_id, :start_date, :end_date, :status, presence: true
   validates :status, inclusion: { in: STATUS,
     message: "%{value} is not a valid status" }
-  validate :check_for_overlap
+  validate :check_for_overlap, :check_end_date_after_start_date
 
   after_initialize { self.status ||= "PENDING" }
 
@@ -41,6 +41,14 @@ class CatRentalRequest < ActiveRecord::Base
   def check_for_overlap
     if status == 'APPROVED' && !overlapping_approved_requests.to_a.empty?
       errors[:status] << "There is an overlapping approved request."
+    end
+  end
+
+  def check_end_date_after_start_date
+    return if start_date.nil? || end_date.nil?
+    if start_date > end_date
+      errors[:start_date]<<"Must be before end date"
+      errors[:end_date]<<"Must be after start date"
     end
   end
 

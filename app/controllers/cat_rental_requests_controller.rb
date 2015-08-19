@@ -11,6 +11,7 @@ class CatRentalRequestsController < ApplicationController
       redirect_to cat_url(@rental_request.cat_id)
     else
       @cats = Cat.all
+      flash.now[:errors] = @rental_request.errors.full_messages
       render :new
     end
   end
@@ -23,11 +24,12 @@ class CatRentalRequestsController < ApplicationController
   def approve
     @rental =CatRentalRequest.find(params[:id])
     @rental.approve!
-    render json: @rental
+    redirect_to cat_url(@rental.cat_id)
   end
 
   def deny
-    CatRentalRequest.find(params[:id]).deny!
-    render text: "Denied #{params[:id]}"
+    @rental = CatRentalRequest.find(params[:id])
+    @rental.deny!
+    redirect_to cat_url(@rental.cat_id)
   end
 end

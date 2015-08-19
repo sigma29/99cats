@@ -24,6 +24,7 @@
   <tr>
     <td><%=rental.start_date%> </td>
     <td><%=rental.end_date%>  </td>
+    <td><%=rental.status %> </td>
     <% if rental.pending?%>
       <td><%= button_to  "approve",
         "cat_rental_requests/#{rental.id}/approve",
