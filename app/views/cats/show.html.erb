@@ -1,5 +1,7 @@
 <h1> <%= @cat.name %></h1>
 
+<%= render partial: "layouts/errors" %>
+
 <table>
   <tr>
     <th>Color</th>
@@ -23,20 +25,34 @@
     <th> Start Date</th>
     <th> End date </th>
     <th> Status </th>
+    <th> Requester </th>
   </tr>
 <% @rentals.each do |rental| %>
   <tr>
-    <td><%=rental.start_date%> </td>
-    <td><%=rental.end_date%>  </td>
-    <td><%=rental.status %> </td>
-    <% if rental.pending? && user_owns_cat?%>
-      <td><%= button_to  "approve",
-        "cat_rental_requests/#{rental.id}/approve",
-        :class=> "button" %></td>
-      <td><%= button_to  "deny",
-        "cat_rental_requests/#{rental.id}/deny",
-        :class=> "button" %></td>
-    <%end%>
+    <td><%= rental.start_date %></td>
+    <td><%= rental.end_date %></td>
+    <td><%= rental.status %></td>
+    <td><%= rental.requester.user_name %></td>
+    <% if rental.pending? && user_owns_cat? %>
+      <td>
+        <form action="<%= request_approval_url(rental.id) %>" method="post">
+          <input
+            type="hidden"
+            name="authenticity_token"
+            value="<%= form_authenticity_token %>">
+          <button>Approve</button>
+        </form>
+      </td>
+      <td>
+        <form action="<%= request_denial_url(rental.id) %>" method="post">
+          <input
+            type="hidden"
+            name="authenticity_token"
+            value="<%= form_authenticity_token %>">
+          <button>Deny</button>
+        </form>
+      </td>
+    <% end %>
 </tr>
-<%end%>
+<% end %>
 </table>

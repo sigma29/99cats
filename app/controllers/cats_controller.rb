@@ -10,7 +10,11 @@ class CatsController < ApplicationController
 
   def show
     @cat = Cat.find(params[:id])
-    @rentals = @cat.cat_rental_requests.order(:start_date)
+    @rentals = @cat
+      .cat_rental_requests
+      .joins("JOIN users ON cat_rental_requests.user_id = users.id")
+      .order(:start_date)
+      .includes(:requester)
     render :show
   end
 
@@ -20,13 +24,12 @@ class CatsController < ApplicationController
   end
 
   def create
-    @cat = Cat.new(cat_params)
-    @cat.user_id = current_user.id
+    @cat = current_user.cats.new(cat_params)
     if @cat.save
       redirect_to cat_url(@cat)
     else
       flash.now[:errors] = @cat.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -50,7 +53,7 @@ class CatsController < ApplicationController
 
   private
   def cat_params
-    params.require(:cat).permit(:name,:sex,:color,:description,:birthdate)
+    params.require(:cat).permit(:name, :sex, :color, :description, :birthdate)
   end
 
   def editor_owns_cat

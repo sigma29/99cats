@@ -8,13 +8,14 @@ class CatRentalRequestsController < ApplicationController
   end
 
   def create
-    @rental_request = CatRentalRequest.new(rental_params)
+    @rental_request = current_user.rental_requests.new(rental_params)
+    #debugger
     if @rental_request.save
       redirect_to cat_url(@rental_request.cat_id)
     else
       @cats = Cat.all
       flash.now[:errors] = @rental_request.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 

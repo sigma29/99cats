@@ -12,6 +12,11 @@ class User < ActiveRecord::Base
     foreign_key: :user_id,
     primary_key: :id
 
+  has_many :rental_requests,
+    class_name: "CatRentalRequest",
+    foreign_key: :user_id,
+    primary_key: :id
+
   def self.find_by_credentials(user_name, password)
     user = User.find_by(user_name: user_name)
     return unless user

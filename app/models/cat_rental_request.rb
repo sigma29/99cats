@@ -1,14 +1,19 @@
 class CatRentalRequest < ActiveRecord::Base
   STATUS = ["PENDING", "APPROVED", "DENIED"]
 
-  validates :cat_id, :start_date, :end_date, :status, presence: true
+  validates :cat_id, :start_date, :end_date, :status, :user_id, presence: true
   validates :status, inclusion: { in: STATUS,
     message: "%{value} is not a valid status" }
   validate :check_for_overlap, :check_end_date_after_start_date
 
-  after_initialize { self.status ||= "PENDING" }
+  after_initialize :set_initial_status
 
   belongs_to :cat
+
+  belongs_to :requester,
+    class_name: "User",
+    foreign_key: :user_id,
+    primary_key: :id
 
   def approve!
     if status == 'PENDING' && overlapping_approved_requests.to_a.empty?
@@ -19,7 +24,7 @@ class CatRentalRequest < ActiveRecord::Base
 
     CatRentalRequest.transaction do
       self.save!
-      overlaps.each { |request| request.save! }
+      overlaps.each { |request| request.save! } if overlaps
     end
   end
 
@@ -37,9 +42,15 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   private
+  def set_initial_status
+    self.status ||= "PENDING"
+    if has_overlapping_approved_requests?
+      self.status = "DENIED"
+    end
+  end
 
   def check_for_overlap
-    if status == 'APPROVED' && !overlapping_approved_requests.to_a.empty?
+    if status == 'APPROVED' && has_overlapping_approved_requests?
       errors[:status] << "There is an overlapping approved request."
     end
   end
@@ -47,13 +58,17 @@ class CatRentalRequest < ActiveRecord::Base
   def check_end_date_after_start_date
     return if start_date.nil? || end_date.nil?
     if start_date > end_date
-      errors[:start_date]<<"Must be before end date"
-      errors[:end_date]<<"Must be after start date"
+      errors[:start_date] << "Must be before end date"
+      errors[:end_date] << "Must be after start date"
     end
   end
 
   def overlapping_approved_requests
     overlapping_requests.where("cat_rental_requests.status = 'APPROVED'")
+  end
+
+  def has_overlapping_approved_requests?
+    !overlapping_approved_requests.to_a.empty?
   end
 
   def overlapping_pending_requests
