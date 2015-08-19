@@ -1,0 +1,12 @@
+
+<% unless current_user%>
+    <form action="<%=new_session_url%>" method="get">
+      <input
+        type="hidden"
+        name="authenticity_token"
+        value="<%=form_authenticity_token%>">
+
+      <button>Log in</button>
+    </form>
+<%end%>
+<h1> Welcome to cat rentals!</h1>

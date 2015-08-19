@@ -5,6 +5,18 @@
 </head>
 <body>
 
+<% if current_user %>
+  <%= "Logged in as #{current_user.user_name}" %>
+  <form action="/session" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input
+      type="hidden"
+      name="authenticity_token"
+      value="<%=form_authenticity_token%>">
+
+    <button>Log out</button>
+  </form>
+<% end %>
 
 <%= yield %>
 

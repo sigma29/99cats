@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   post 'cats/cat_rental_requests/:id/deny', to: "cat_rental_requests#deny"
   resource :user, only: [:create, :new]
   resource :session, only: [:create,:new,:destroy]
+
+  root to: "cat_rental_requests#index"
 end

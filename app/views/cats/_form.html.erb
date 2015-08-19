@@ -2,6 +2,11 @@
 <%button_text = cat.persisted? ? "Update cat" : "Create cat" %>
 <%form_method = cat.persisted? ? "PATCH" : "POST" %>
 <form action="<%= action_url%>" method="post">
+  <input
+    type="hidden"
+    name="authenticity_token"
+    value="<%=form_authenticity_token%>">
+
   <input type="hidden" name="_method" value="<%=form_method%>">
   <label for="cat_name">Name of Cat</label>
   <input name="cat[name]" id="cat_name" type="text" value="<%= cat.name %>">

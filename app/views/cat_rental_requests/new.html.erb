@@ -4,6 +4,10 @@
 <%=render partial: "layouts/errors" %>
 
 <form action="<%= cat_rental_requests_url %>" method="post">
+  <input
+    type="hidden"
+    name="authenticity_token"
+    value="<%=form_authenticity_token%>">
 
   <label for="cat_to_rent">Choose a Cat</label>
   <select name=cat_rental_request[cat_id] id="cat_to_rent">

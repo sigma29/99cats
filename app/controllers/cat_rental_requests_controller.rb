@@ -32,4 +32,8 @@ class CatRentalRequestsController < ApplicationController
     @rental.deny!
     redirect_to cat_url(@rental.cat_id)
   end
+
+  def index
+    render :index
+  end
 end
