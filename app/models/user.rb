@@ -1,5 +1,3 @@
-require 'bcrypt'
-
 class User < ActiveRecord::Base
   attr_reader :password
 
@@ -8,6 +6,11 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 8, allow_nil: true }
 
   after_initialize  { self.session_token ||= SecureRandom::urlsafe_base64(16) }
+
+  has_many :cats,
+    class_name: "Cat",
+    foreign_key: :user_id,
+    primary_key: :id
 
   def self.find_by_credentials(user_name, password)
     user = User.find_by(user_name: user_name)

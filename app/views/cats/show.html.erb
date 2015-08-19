@@ -6,12 +6,14 @@
     <th>Age (years)</th>
     <th>Sex</th>
     <th>Description</th>
+    <th>Owner</th>
   </tr>
   <tr>
     <td><%= @cat.color %> </td>
     <td><%= @cat.age %></td>
     <td><%= @cat.sex %></td>
     <td><%= @cat.description %></td>
+    <td><%= @cat.owner.user_name %></td>
   </tr>
 </table>
 
